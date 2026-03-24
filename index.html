@@ -3574,7 +3574,7 @@
         // ---------------------------------------------------------------------
         const copyrightValue = 'Copyright © 2025 @x-builder, Japan';
         const email = 'x-builder@gmail.com';
-        const appName = 'xClock Ver1.27';
+        const appName = 'xClock Ver1.28';
         // ---------------------------------------------------------------------
         // [変更履歴]
         // 2025-08-05 Ver0.01 新規開発
@@ -3611,6 +3611,7 @@
         // 2026-01-22 Ver1.25  テーマ設定の日付形式に「yyyy.MM.dd」「gyy.MM.dd」「MM.dd」を追加
         // 2026-01-26 Ver1.26  天候予報の更新タイミングを固定（0:00、3:00、6:00、9:00、12:00、15:00、18:00、21:00）に変更
         // 2026-01-26 Ver1.27  HTTPエラーの場合に再試行する機能追加
+        // 2026-03-24 Ver1.28  未来日指定で天気予報の気温を有効にする。
         // ---------------------------------------------------------------------
 
         // ◆グローバル変数
@@ -5144,7 +5145,7 @@
         
             try {
                 const response = await fetchWithRetry(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,weathercode,windspeed_10m,winddirection_10m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia/Tokyo`,
+                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,weathercode,windspeed_10m,winddirection_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,temperature_2m_mean&timezone=Asia/Tokyo`,
                     { maxRetries: 3, timeout: 15000 }
                 );
                 if (!response.ok) throw new Error(`HTTPエラー: ${response.status}`);
@@ -5168,7 +5169,7 @@
                     // 1〜7日先の天気
                     const dayIndex = parseInt(forecastDay);
                     weatherCode = data.daily?.weathercode?.[dayIndex] ?? 0;
-                    currentTemp = "--";
+                    currentTemp = data.daily?.temperature_2m_mean?.[dayIndex] ?? "--";
                     maxTemp = data.daily?.temperature_2m_max?.[dayIndex] ?? "--";
                     minTemp = data.daily?.temperature_2m_min?.[dayIndex] ?? "--";
                     humidity = data.hourly?.relative_humidity_2m?.[dayIndex * 24 + 12] ?? "--";
@@ -5209,7 +5210,7 @@
                         displayText += `${matchingWeather.name}`;
                     }
                 }
-                if (showTemp && forecastDay === "0") displayText += ` ${currentTemp}℃`;
+                if (showTemp) displayText += ` ${currentTemp}℃`;
                 if (showMaxTemp) displayText += ` ↑${maxTemp}℃`;
                 if (showMinTemp) displayText += ` ↓${minTemp}℃`;
                 if (showHumidity) displayText += ` ${humidity}%`;

@@ -1,11 +1,16 @@
 {
     "name": "xclock",
-    "version": "1.27.0",
+    "version": "1.28.0",
     "description": "xClock - Digital Clock",
     "main": "main.js",
     "scripts": {
-        "start": "electron .",
-        "build": "electron-builder --win nsis"
+        "start": "chcp 65001 && electron .",
+        "build": "electron-builder --win",
+        "dist": "electron-builder --win --x64 --config.compression=maximum",
+        "dist:32": "electron-builder --win --ia32",
+        "dist:portable": "electron-builder --win --x64 --target portable",
+        "publish": "electron-builder --win --publish always",
+        "sign": "electron-builder --win --x64 --config.cscLink=authenticode.pfx --config.cscKeyPassword=%CSC_KEY_PASSWORD%"
     },
     "author": "x-builder",
     "license": "MIT",
