@@ -1,3 +1,8 @@
+// main.js -------------------------------------------------------------
+const copyright = 'Copyright © 2025-2026 @x-builder, Japan';
+const email = 'x-builder@gmail.com';
+const appName = 'xClock -デジタル時計- Ver1.28.0';
+// ---------------------------------------------------------------------
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 
